@@ -1,5 +1,5 @@
 {
-    "name": "BHS Password Policy",
+    "name": "Password Policy",
     "summary": "Allow admin to set password security requirements.",
     "version": "17.0.1.0.0",
     "author": "Bac Ha Software",
