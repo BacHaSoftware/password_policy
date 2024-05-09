@@ -58,12 +58,17 @@
   </a>
 </div>
 
-🌟 Key Features:
-* <code>Feature Section</code>: Automatically prompts users to update their passwords every 90 days, enhancing security measures and minimizing vulnerability risks.
-* <code>Customizable Password Policies</code>: Set specific requirements for password complexity, including length, lowercase and uppercase letters, numbers, and special characters, to fortify your system against unauthorized access.
-* <code>Comprehensive Configuration</code>: Easily configure password policies through General Settings, allowing for quick adjustments tailored to your company’s needs.
-* <code>Enforced Password Complexity</code>: Ensures all user passwords meet predefined criteria at their next change, bolstering your system’s defense.
-* <code>Company Level Setting</code>: Customize settings for each company under your umbrella, ensuring consistency in security policies across your enterprise.
+#### Key Features:
+
+🌟 <code>Feature Section</code>: Automatically prompts users to update their passwords every 90 days, enhancing security measures and minimizing vulnerability risks.
+
+🌟 <code>Customizable Password Policies</code>: Set specific requirements for password complexity, including length, lowercase and uppercase letters, numbers, and special characters, to fortify your system against unauthorized access.
+
+🌟 <code>Comprehensive Configuration</code>: Easily configure password policies through General Settings, allowing for quick adjustments tailored to your company’s needs.
+
+🌟 <code>Enforced Password Complexity</code>: Ensures all user passwords meet predefined criteria at their next change, bolstering your system’s defense.
+
+🌟 <code>Company Level Setting</code>: Customize settings for each company under your umbrella, ensuring consistency in security policies across your enterprise.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -95,11 +100,15 @@ Configure your desired password rules based on the given parameters
 
 Strengthen your Odoo system with our Password Policy module, ideal for all industries. Set up strong password policies quickly and easily to keep your data safe.
 
-🌟 Featured Highlight:
-* <code>Strong Password Requirements</code>: Ensure passwords include uppercase, lowercase, numbers, and special characters.
-* <code>Automatic Password Updates</code>: Set passwords to automatically expire, prompting users to change them regularly.
-* <code>Simple Setup</code>: Adjust settings directly from the General Settings menu, applying strong password policies across your organization effortlessly.
-* <code>Prevent Password Reuse</code>: Stop the reuse of old passwords and set time limits on how often passwords can be changed to enhance security.
+#### Featured Highlight:
+
+🌟 <code>Strong Password Requirements</code>: Ensure passwords include uppercase, lowercase, numbers, and special characters.
+
+🌟 <code>Automatic Password Updates</code>: Set passwords to automatically expire, prompting users to change them regularly.
+
+🌟 <code>Simple Setup</code>: Adjust settings directly from the General Settings menu, applying strong password policies across your organization effortlessly.
+
+🌟 <code>Prevent Password Reuse</code>: Stop the reuse of old passwords and set time limits on how often passwords can be changed to enhance security.
 
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
