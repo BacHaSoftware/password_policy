@@ -1,14 +1,6 @@
 
 <a name="readme-top"></a>
 
-<!-- PROJECT LOGO -->
-<div align="left" style="border-bottom: 1px solid var(--borderColor-muted, var(--color-border-muted));">
-  <a href="https://github.com/BacHaSoftware">
-    <img src="/bhs_password_policy/static/description/imgs/logo.png" alt="Logo" height="80">
-  </a>
-</div>
-
-
 <!-- PROJECT DETAILS -->
 <br />
 <div align="center">
