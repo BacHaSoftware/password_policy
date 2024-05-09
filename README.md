@@ -6,10 +6,11 @@
   <a href="https://github.com/BacHaSoftware">
     <img src="/bhs_password_policy/static/description/imgs/logo.png" alt="Logo" height="80">
   </a>
+<hr/>
 </div>
 
 
-<!-- PROJECT LOGO -->
+<!-- PROJECT DETAILS -->
 <br />
 <div align="center">
   <a href="https://github.com/BacHaSoftware/password_policy">
