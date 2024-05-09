@@ -59,7 +59,7 @@
 
 🌟 <code>Enforced Password Complexity</code>: Ensures all user passwords meet predefined criteria at their next change, bolstering your system’s defense.
 
-🌟 <code>Company Level Setting</code>: Customize settings for each company under your umbrella, ensuring consistency in security policies across your enterprise.
+🌟 <code>Send Mail Notification</code>: Send password expiration notification by email 3 days (can be configured) before expiration.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
