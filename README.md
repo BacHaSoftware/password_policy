@@ -42,7 +42,7 @@
     </li>
     <li><a href="#usage">Usage</a></li>
     <li><a href="#license">License</a></li>
-    <li><a href="#contact">Contact</a></li>
+    <li><a href="#contact-us">Contact us</a></li>
   </ol>
 </details>
 
@@ -57,7 +57,7 @@
   </a>
 </div>
 
-####Key Features:
+###Key Features:
 * <code>Feature Section</code>: Automatically prompts users to update their passwords every 90 days, enhancing security measures and minimizing vulnerability risks.
 * <code>Customizable Password Policies</code>: Set specific requirements for password complexity, including length, lowercase and uppercase letters, numbers, and special characters, to fortify your system against unauthorized access.
 * <code>Comprehensive Configuration</code>: Easily configure password policies through General Settings, allowing for quick adjustments tailored to your company’s needs.
@@ -94,7 +94,7 @@ Configure your desired password rules based on the given parameters
 
 Strengthen your Odoo system with our Password Policy module, ideal for all industries. Set up strong password policies quickly and easily to keep your data safe.
 
-####Featured Highlight:
+###Featured Highlight:
 * <code>Strong Password Requirements</code>: Ensure passwords include uppercase, lowercase, numbers, and special characters.
 * <code>Automatic Password Updates</code>: Set passwords to automatically expire, prompting users to change them regularly.
 * <code>Simple Setup</code>: Adjust settings directly from the General Settings menu, applying strong password policies across your organization effortlessly.
@@ -114,7 +114,7 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 
 
 
-<!-- CONTACT -->
+<!-- CONTACT US-->
 ## Contact us
 Need assistance with setup or have any concerns? Contact Bac Ha Software directly for prompt and dedicated support:
 <div align="left">
