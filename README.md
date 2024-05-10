@@ -45,7 +45,7 @@
 
 <div align="left">
   <a href="https://github.com/BacHaSoftware/password_policy">
-    <img src="/bhs_password_policy/static/description/imgs/setting.png" alt="Setting">
+    <img src="/bhs_password_policy/static/description/imgs/screen/setting.png" alt="Setting">
   </a>
 </div>
 
