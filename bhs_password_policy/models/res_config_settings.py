@@ -16,3 +16,5 @@ class ResConfigSettings(models.TransientModel):
         "Test password expiration", config_parameter="auth_password_policy.test_password_expiration", default=False,
         help="If check it, time unit of password_expiration will be converted from days to minutes"
     )
+    time_compute_expire = fields.Float(config_parameter="auth_password_policy.time_compute_expire", default=3)
+    day_alert_expire = fields.Integer(config_parameter="auth_password_policy.day_alert_expire", default=3)

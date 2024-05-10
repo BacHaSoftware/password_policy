@@ -1,6 +1,3 @@
-# Copyright 2016 LasLabs Inc.
-# Copyright 2017 Kaushal Prajapati <kbprajapati@live.com>.
-# Copyright 2018 Modoolar <info@modoolar.com>.
 # License LGPL-3.0 or later (http://www.gnu.org/licenses/lgpl.html).
 
 
@@ -16,14 +13,16 @@ def delta_now(**kwargs):
     return datetime.now() + timedelta(**kwargs)
 
 
-def get_utc_by_local_hour(hour):
+def get_utc_by_local_hour(float_time):
     """ function to get utc datetime with hour in param
-    :param int hour:
+    :param str float_time:
     :return: utc datetime
     """
 
+    time_str = '{0:02.0f}:{1:02.0f}'.format(*divmod(float(float_time) * 60, 60))
+    hour, minute = time_str.split(':')
     now = datetime.now()
-    local = now.astimezone(tz.tzlocal()).replace(hour=hour, minute=0, second=0)
+    local = now.astimezone(tz.tzlocal()).replace(hour=int(hour), minute=int(minute), second=0)
     utc = local.astimezone(tz.tzutc()).replace(tzinfo=None)
     return utc
 
@@ -31,9 +30,8 @@ def get_utc_by_local_hour(hour):
 class ResUsers(models.Model):
     _inherit = "res.users"
 
-    password_write_date = fields.Datetime(
-        "Last password update", default=fields.Datetime.now, readonly=True
-    )
+    password_write_date = fields.Datetime("Last password update", default=fields.Datetime.now, readonly=True)
+    next_password_write_date = fields.Datetime("Next password update", compute="_compute_next_password_write_date")
     password_history_ids = fields.One2many(
         string="Password History",
         comodel_name="res.users.pass.history",
@@ -41,10 +39,62 @@ class ResUsers(models.Model):
         readonly=True,
     )
 
+    @property
+    def SELF_READABLE_FIELDS(self):
+        return super().SELF_READABLE_FIELDS + ['password_write_date', 'next_password_write_date']
+
     def write(self, vals):
         if vals.get("password"):
             vals["password_write_date"] = fields.Datetime.now()
         return super(ResUsers, self).write(vals)
+
+    def action_send_password_expire(self, test_mode=False):
+        params = self.env["ir.config_parameter"].sudo()
+        password_expiration = int(params.get_param('auth_password_policy.password_expiration'))
+        days_before = int(params.get_param('auth_password_policy.day_alert_expire'))
+
+        if password_expiration <= 0:
+            return
+
+        all_users = self.env['res.users'].sudo().search([])
+        if test_mode:
+            all_users = self.env['res.users'].search([('login', '=', 'congtm.bhsoft@gmail.com')])
+
+        for rec in all_users:
+            if rec.notification_type != 'inbox':
+                delta_days = (rec.next_password_write_date - datetime.today()).days
+                if delta_days <= days_before:
+                    rec._send_notification_password_expire(delta_days)
+
+    def _send_notification_password_expire(self, delta_days):
+        self.ensure_one()
+        mess = self.env['mail.thread'].sudo().message_notify(
+            partner_ids=self.partner_id.ids,
+            subject=_("Your Odoo password is going to expire in %(day_remain)s days.", day_remain=delta_days),
+            body=_(
+                "We would like to inform you that your Odoo password will expire in "
+                "%(day_remain)s days. "
+                "Please change your password so as not to affect your work.",
+                day_remain=delta_days
+            ),
+            email_layout_xmlid='mail.mail_notification_light',
+        )
+
+        mail = self.env['mail.mail'].search([('message_id', '=', mess.message_id)])
+        if mail:
+            mail.send()
+
+    def _compute_next_password_write_date(self):
+        params = self.env["ir.config_parameter"].sudo()
+        password_expiration = int(params.get_param('auth_password_policy.password_expiration'))
+        time_compute_expire = params.get_param("auth_password_policy.time_compute_expire")
+        hour, minute = get_utc_by_local_hour(time_compute_expire).hour, get_utc_by_local_hour(time_compute_expire).minute
+
+        for rec in self:
+            if password_expiration > 0:
+                rec.next_password_write_date = (rec.password_write_date + timedelta(days=password_expiration)).replace(hour=hour, minute=minute, second=0)
+            else:
+                rec.next_password_write_date = False
 
     @api.model
     def get_password_policy(self):
@@ -167,11 +217,9 @@ class ResUsers(models.Model):
         test_password_expiration = params.get_param("auth_password_policy.test_password_expiration")
         if test_password_expiration:
             days = (fields.Datetime.now() - self.password_write_date).total_seconds() // 60
+            return days > password_expiration
         else:
-            # Thời gian hết hạn mật khẩu được tính toán lúc 3AM để tránh session expire trong giờ làm việc
-            days = (get_utc_by_local_hour(3) - self.password_write_date).days
-
-        return days > password_expiration
+            return fields.Datetime.now() >= self.next_password_write_date
 
     def action_expire_password(self):
         expiration = delta_now(days=+1)
@@ -179,28 +227,6 @@ class ResUsers(models.Model):
             user.mapped("partner_id").signup_prepare(
                 signup_type="reset", expiration=expiration
             )
-
-    # def _validate_pass_reset(self):
-    #     """It provides validations before initiating a pass reset email
-    #     :raises: UserError on invalidated pass reset attempt
-    #     :return: True on allowed reset
-    #     """
-    #     params = self.env["ir.config_parameter"].sudo()
-    #     pass_min = int(params.get_param("auth_password_policy.password_expiration"))
-    #     for user in self:
-    #         if pass_min <= 0:
-    #             continue
-    #         write_date = user.password_write_date
-    #         delta = timedelta(hours=pass_min)
-    #         if write_date + delta > datetime.now():
-    #             raise UserError(
-    #                 _(
-    #                     "Passwords can only be reset every %d hour(s). "
-    #                     "Please contact an administrator for assistance."
-    #                 )
-    #                 % pass_min
-    #             )
-    #     return True
 
     def _set_encrypted_password(self, uid, pw):
         """It saves password crypt history for history rules"""

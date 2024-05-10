@@ -20,6 +20,19 @@
                     </div>
                     <div class="mt16">
                         <span>
+                            Alert password expires before
+                            <field name="day_alert_expire" class="oe_inline" />
+                            days.
+                        </span>
+                    </div>
+                    <div class="mt16">
+                        <span>
+                            Time to compute expire password
+                            <field name="time_compute_expire" widget="float_time" class="oe_inline" />
+                        </span>
+                    </div>
+                    <div class="mt16">
+                        <span>
                             Minimum number of characters
                             <field name="minlength" class="oe_inline" />
                         </span>

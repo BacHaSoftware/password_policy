@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 17.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-24 04:42+0000\n"
-"PO-Revision-Date: 2024-01-24 04:42+0000\n"
+"POT-Creation-Date: 2024-03-13 10:42+0000\n"
+"PO-Revision-Date: 2024-03-13 10:42+0000\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -60,6 +60,11 @@ msgstr ""
 "* Chữ in hoa (ít nhất %s ký tự)"
 
 #. module: bhs_password_policy
+#: model_terms:ir.ui.view,arch_db:bhs_password_policy.res_config_settings_view_form
+msgid "Alert password expires before"
+msgstr "Thông báo hết hạn mật khẩu trước"
+
+#. module: bhs_password_policy
 #. odoo-python
 #: code:addons/bhs_password_policy/models/res_users.py:0
 #, python-format
@@ -85,6 +90,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bhs_password_policy.field_res_users_pass_history__date
 msgid "Date"
 msgstr "Ngày"
+
+#. module: bhs_password_policy
+#: model:ir.model.fields,field_description:bhs_password_policy.field_res_config_settings__day_alert_expire
+msgid "Day Alert Expire"
+msgstr ""
 
 #. module: bhs_password_policy
 #: model_terms:ir.ui.view,arch_db:bhs_password_policy.res_config_settings_view_form
@@ -118,8 +128,8 @@ msgid ""
 "If check it, time unit of password_expiration will be converted from days to"
 " minutes"
 msgstr ""
-"Nếu chọn, đơn vị thời gian của pass_expiration sẽ được chuyển đổi từ ngày sang"
-" phút"
+"Nếu chọn, đơn vị thời gian của pass_expiration sẽ được chuyển đổi từ ngày "
+"sang phút"
 
 #. module: bhs_password_policy
 #: model:ir.model.fields,field_description:bhs_password_policy.field_res_users_pass_history__write_uid
@@ -135,6 +145,11 @@ msgstr ""
 #: model:ir.model.fields,field_description:bhs_password_policy.field_res_users__password_write_date
 msgid "Last password update"
 msgstr "Thời gian cập nhật mật khẩu lần trước"
+
+#. module: bhs_password_policy
+#: model_terms:ir.ui.view,arch_db:bhs_password_policy.res_config_settings_view_form
+msgid "Minimum number of characters"
+msgstr "Số lượng ký tự tối thiểu"
 
 #. module: bhs_password_policy
 #: model_terms:ir.ui.view,arch_db:bhs_password_policy.res_config_settings_view_form
@@ -164,6 +179,11 @@ msgid "Must contain the following:"
 msgstr "Phải bao gồm:"
 
 #. module: bhs_password_policy
+#: model:ir.model.fields,field_description:bhs_password_policy.field_res_users__next_password_write_date
+msgid "Next password update"
+msgstr "Thời gian đổi mật khẩu lần sau"
+
+#. module: bhs_password_policy
 #: model:ir.model.fields,field_description:bhs_password_policy.field_res_config_settings__password_expiration
 msgid "Password Expiration"
 msgstr "Thời hạn mật khẩu"
@@ -177,11 +197,6 @@ msgstr "Lịch sử mật khẩu"
 #. module: bhs_password_policy
 #: model:ir.model.fields,field_description:bhs_password_policy.field_res_config_settings__password_lower
 msgid "Password Lower"
-msgstr ""
-
-#. module: bhs_password_policy
-#: model:ir.model.fields,field_description:bhs_password_policy.field_res_config_settings__password_minimum
-msgid "Password Minimum"
 msgstr ""
 
 #. module: bhs_password_policy
@@ -217,15 +232,9 @@ msgid "Password must be %d characters or more."
 msgstr "Mật khẩu phải có %d ký tự hoặc dài hơn"
 
 #. module: bhs_password_policy
-#. odoo-python
-#: code:addons/bhs_password_policy/models/res_users.py:0
-#, python-format
-msgid ""
-"Passwords can only be reset every %d hour(s). Please contact an "
-"administrator for assistance."
-msgstr ""
-"Mật khẩu chỉ có thể được đặt lại sau mỗi %d giờ. Vui lòng liên hệ với "
-"quản trị viên để được hỗ trợ."
+#: model:ir.actions.server,name:bhs_password_policy.ir_cron_send_email_password_expire_ir_actions_server
+msgid "Password policy: Send reminder password expires"
+msgstr "Chính sách mật khẩu: Gửi nhắc nhở mật khẩu hết hạn"
 
 #. module: bhs_password_policy
 #: model:ir.model,name:bhs_password_policy.model_res_users_pass_history
@@ -238,6 +247,16 @@ msgid "Test password expiration"
 msgstr "Kiểm tra tính năng hết hạn mật khẩu"
 
 #. module: bhs_password_policy
+#: model:ir.model.fields,field_description:bhs_password_policy.field_res_config_settings__time_compute_expire
+msgid "Time Compute Expire"
+msgstr "Giờ tính hết hạn mật khẩu trong ngày"
+
+#. module: bhs_password_policy
+#: model_terms:ir.ui.view,arch_db:bhs_password_policy.res_config_settings_view_form
+msgid "Time to compute expire password"
+msgstr "Giờ tính hết hạn mật khẩu trong ngày"
+
+#. module: bhs_password_policy
 #: model_terms:ir.ui.view,arch_db:bhs_password_policy.res_config_settings_view_form
 msgid "Use negative number for infinite, or 0 to disable"
 msgstr "Sử dụng số âm cho vô hạn, hoặc 0 để tắt"
@@ -247,6 +266,25 @@ msgstr "Sử dụng số âm cho vô hạn, hoặc 0 để tắt"
 #: model:ir.model.fields,field_description:bhs_password_policy.field_res_users_pass_history__user_id
 msgid "User"
 msgstr "Người dùng"
+
+#. module: bhs_password_policy
+#. odoo-python
+#: code:addons/bhs_password_policy/models/res_users.py:0
+#, python-format
+msgid ""
+"We would like to inform you that your Odoo password will expire in "
+"%(day_remain)s days. Please change your password so as not to affect your "
+"work."
+msgstr ""
+"Thông báo: mật khẩu Odoo của bạn sẽ hết hạn sau %(day_remain)s ngày. Hãy "
+"đổi mật khẩu để không ảnh hưởng đến công việc của bạn."
+
+#. module: bhs_password_policy
+#. odoo-python
+#: code:addons/bhs_password_policy/models/res_users.py:0
+#, python-format
+msgid "Your Odoo password is going to expire in %(day_remain)s days."
+msgstr "Mật khẩu Odoo của bạn sẽ hết hạn trong %(day_remain)s ngày."
 
 #. module: bhs_password_policy
 #: model_terms:ir.ui.view,arch_db:bhs_password_policy.res_config_settings_view_form
