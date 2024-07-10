@@ -6,7 +6,7 @@
             <field name="model_id" ref="model_res_users"/>
             <field name="state">code</field>
             <field name="active">False</field>
-            <field name="code">model.action_send_password_expire(test_mode=False)</field>
+            <field name="code">model.action_send_password_expire(user_ids=[])</field>
             <field name="interval_number">1</field>
             <field name="doall" eval="False"/>
             <field name="interval_type">days</field>

@@ -4,17 +4,20 @@
 import re
 from datetime import datetime, timedelta
 from dateutil import tz
+from markupsafe import Markup, escape
 
-from odoo import _, api, fields, models
+from odoo import _, api, fields, models, tools
 from odoo.exceptions import UserError, ValidationError
+from odoo.addons.auth_signup.models.res_partner import SignupError, now
 
 
 def delta_now(**kwargs):
     return datetime.now() + timedelta(**kwargs)
 
 
-def get_utc_by_local_hour(float_time):
+def get_hour_utc(float_time, timezone):
     """ function to get utc datetime with hour in param
+    :param timezone:
     :param str float_time:
     :return: utc datetime
     """
@@ -22,7 +25,7 @@ def get_utc_by_local_hour(float_time):
     time_str = '{0:02.0f}:{1:02.0f}'.format(*divmod(float(float_time) * 60, 60))
     hour, minute = time_str.split(':')
     now = datetime.now()
-    local = now.astimezone(tz.tzlocal()).replace(hour=int(hour), minute=int(minute), second=0)
+    local = now.astimezone(tz.gettz(timezone)).replace(hour=int(hour), minute=int(minute), second=0)
     utc = local.astimezone(tz.tzutc()).replace(tzinfo=None)
     return utc
 
@@ -48,7 +51,7 @@ class ResUsers(models.Model):
             vals["password_write_date"] = fields.Datetime.now()
         return super(ResUsers, self).write(vals)
 
-    def action_send_password_expire(self, test_mode=False):
+    def action_send_password_expire(self, user_ids=[]):
         params = self.env["ir.config_parameter"].sudo()
         password_expiration = int(params.get_param('auth_password_policy.password_expiration'))
         days_before = int(params.get_param('auth_password_policy.day_alert_expire'))
@@ -56,9 +59,10 @@ class ResUsers(models.Model):
         if password_expiration <= 0:
             return
 
-        all_users = self.env['res.users'].sudo().search([])
-        if test_mode:
-            all_users = self.env['res.users'].search([('login', '=', 'congtm.bhsoft@gmail.com')])
+        if user_ids:
+            all_users = self.env['res.users'].sudo().search([('id', 'in', user_ids)])
+        else:
+            all_users = self.env['res.users'].sudo().search([])
 
         for rec in all_users:
             if rec.notification_type != 'inbox':
@@ -67,30 +71,46 @@ class ResUsers(models.Model):
                     rec._send_notification_password_expire(delta_days)
 
     def _send_notification_password_expire(self, delta_days):
-        self.ensure_one()
-        mess = self.env['mail.thread'].sudo().message_notify(
-            partner_ids=self.partner_id.ids,
-            subject=_("Your Odoo password is going to expire in %(day_remain)s days.", day_remain=delta_days),
-            body=_(
-                "We would like to inform you that your Odoo password will expire in "
-                "%(day_remain)s days. "
-                "Please change your password so as not to affect your work.",
-                day_remain=delta_days
-            ),
-            email_layout_xmlid='mail.mail_notification_light',
-        )
+        for rec in self:
+            rec.action_expire_password()
+            body = self.env['mail.render.mixin'].with_context(lang=rec.lang)._render_template(
+                self.env.ref('bhs_password_policy.password_expire'),
+                model='res.users', res_ids=rec.ids,
+                engine='qweb_view', options={'post_process': True},
+                add_context={'day_remain': delta_days},
+            )[rec.id]
 
-        mail = self.env['mail.mail'].search([('message_id', '=', mess.message_id)])
-        if mail:
-            mail.send()
+            msg_values = {
+                # document
+                'model': 'res.users',
+                'res_id': rec.id,
+                # content
+                'body': escape(body),  # escape if text, keep if markup
+                'is_internal': True,
+                'message_type': 'email_outgoing',
+                'subject': _('Odoo Password Expire Notification'),
+                'subtype_id': self.env['ir.model.data']._xmlid_to_res_id('mail.mt_note'),
+                # recipients
+                'message_id': tools.generate_tracking_message_id('message-notify'),
+                'partner_ids': rec.partner_id.ids,
+                # notification
+                'email_add_signature': True,
+            }
+
+            new_message = self.env['mail.thread']._message_create([msg_values])
+            self.env['mail.thread']._fallback_lang()._notify_thread(new_message, msg_values)
+            if rec.notification_type == 'email':
+                mail = self.env['mail.mail'].search([('message_id', '=', new_message.message_id)])
+                if mail:
+                    mail.send()
 
     def _compute_next_password_write_date(self):
         params = self.env["ir.config_parameter"].sudo()
         password_expiration = int(params.get_param('auth_password_policy.password_expiration'))
         time_compute_expire = params.get_param("auth_password_policy.time_compute_expire")
-        hour, minute = get_utc_by_local_hour(time_compute_expire).hour, get_utc_by_local_hour(time_compute_expire).minute
 
         for rec in self:
+            hour, minute = get_hour_utc(time_compute_expire, rec.tz).hour, get_hour_utc(time_compute_expire, rec.tz).minute
             if password_expiration > 0:
                 rec.next_password_write_date = (rec.password_write_date + timedelta(days=password_expiration)).replace(hour=hour, minute=minute, second=0)
             else:
@@ -128,7 +148,7 @@ class ResUsers(models.Model):
         password_lower = int(params.get_param('auth_password_policy.password_lower', default=0))
         password_upper = int(params.get_param('auth_password_policy.password_upper', default=0))
         password_numeric = int(params.get_param('auth_password_policy.password_numeric', default=0))
-        password_special = int(params.get_param('auth_password_policy.password_lower', default=0))
+        password_special = int(params.get_param('auth_password_policy.password_special', default=0))
         message = []
 
         if password_lower > 0:
@@ -202,7 +222,6 @@ class ResUsers(models.Model):
             raise UserError(_("Cannot use the most recent %d passwords") % password_history)
 
         return True
-
 
     def _password_has_expired(self):
         self.ensure_one()

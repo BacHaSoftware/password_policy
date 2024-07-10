@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+import requests
 
 import odoo
 from odoo import api, http, models
@@ -23,17 +24,15 @@ class IrHttp(models.AbstractModel):
         try:
             if request.session.uid is not None:
                 user = request.env['res.users'].browse(request.session.uid)
-
-                # revoke all device if password expire
-                if user._password_has_expired():
+                # if password has expired, logout and prepare for reset password
+                if user._password_has_expired() and request.session.uid != 1:
                     user._revoke_all_devices()
                     user.action_expire_password()
                     request.session.logout(keep_db=True)
                     request.env = api.Environment(request.env.cr, None, request.session.context)
-                    redirect = user.partner_id.signup_url
-                    return request.redirect(redirect)
 
-                if not security.check_session(request.session, request.env):
+                # old authenticate process
+                elif not security.check_session(request.session, request.env):
                     request.session.logout(keep_db=True)
                     request.env = api.Environment(request.env.cr, None, request.session.context)
             getattr(cls, f'_auth_method_{auth}')()

@@ -4,11 +4,12 @@
     "version": "1.0",
     "author": "Bac Ha Software",
     "category": "Base",
-    "depends": ["auth_signup", "auth_password_policy_signup"],
+    "depends": ["auth_signup", "auth_password_policy_signup", 'hr', "auth_password_policy"],
     "website": "https://bachasoftware.com",
     "license": "LGPL-3",
     "data": [
         "data/cron_send_mail.xml",
+        "views/password_expire_notification_templates.xml",
         "views/res_config_settings_views.xml",
         "views/res_users_views.xml",
         "views/signup_templates.xml",
@@ -17,6 +18,6 @@
     ],
     'images': ['static/description/banner.gif'],
     'installable': True,
-    'application': False,
+    'application': True,
     'auto_install': False,
 }
