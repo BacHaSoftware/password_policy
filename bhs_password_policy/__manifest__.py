@@ -16,7 +16,7 @@
         "security/ir.model.access.csv",
         "security/res_users_pass_history.xml",
     ],
-    'images': ['static/description/banner.gif'],
+    'images': ['static/description/banner.png'],
     'installable': True,
     'application': True,
     'auto_install': False,
