@@ -79,26 +79,51 @@ class PasswordSecurityHome(AuthSignupHome):
 
 class Home(web_home.Home):
 
-    @http.route()
-    def web_totp(self, *args, **kw):
-        """If password expired, redirect to reset password in case your organization use 2FA"""
+    # @http.route()
+    # def web_totp(self, *args, **kw):
+    #     """If password expired, redirect to reset password in case your organization use 2FA"""
+    #
+    #     ensure_db()
+    #     response = super(Home, self).web_totp(*args, **kw)
+    #
+    #     if not request.params.get("redirect"):
+    #         return response
+    #     if not request.env.user or request.env.user.id == 4:
+    #         return response
+    #     # Now, I'm an authenticated user
+    #     if not request.env.user._password_has_expired():
+    #         return response
+    #
+    #     # My password is expired, kick me out
+    #     request.env.user.action_expire_password()
+    #     request.session.logout(keep_db=True)
+    #     # I was kicked out, redirect me to reset password
+    #     redirect = request.env.user.partner_id.signup_url
+    #
+    #     return request.redirect(redirect)
 
+    @http.route('/web/login/totp', type='http', auth='public', methods=['GET', 'POST'], sitemap=False, website=True,
+                multilang=False)
+    def web_totp(self, redirect=None, **kwargs):
+        """
+        Handle 2FA login and check for password expiration before finalizing the session.
+        If password is expired, redirect to reset password without completing 2FA.
+        """
         ensure_db()
-        response = super(Home, self).web_totp(*args, **kw)
-
-        if not request.params.get("redirect"):
-            return response
-        if not request.env.user or request.env.user.id == 4:
-            return response
-        # Now, I'm an authenticated user
-        if not request.env.user._password_has_expired():
-            return response
-
-        # My password is expired, kick me out
-        request.env.user.action_expire_password()
-        request.session.logout(keep_db=True)
-        # I was kicked out, redirect me to reset password
-        redirect = request.env.user.partner_id.signup_url
-
-        return request.redirect(redirect)
-
+        # Check if there is a pre-authenticated user
+        if not request.session.pre_uid:
+            return request.redirect('/web/login')
+        user = request.env['res.users'].sudo().search([('id', '=', request.session.pre_uid)])
+        # user = request.env['res.users'].browse(request.session.pre_uid)
+        if not user:
+            return request.redirect('/web/login')
+        # Check if password is expired before proceeding with 2FA
+        if user._password_has_expired():
+            # Trigger password expiration and redirect to reset password
+            user.action_expire_password()
+            request.session.logout(keep_db=True)
+            redirect_url = user.partner_id.signup_url
+            return request.redirect(redirect_url)
+        # If password is not expired, proceed with original 2FA flow
+        response = super(Home, self).web_totp(redirect=redirect, **kwargs)
+        return response
