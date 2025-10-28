@@ -93,6 +93,7 @@ class ResUsers(models.Model):
                 # recipients
                 'message_id': tools.generate_tracking_message_id('message-notify'),
                 'partner_ids': rec.partner_id.ids,
+                'reply_to': rec.company_id.email_formatted,
                 # notification
                 'email_add_signature': True,
             }
