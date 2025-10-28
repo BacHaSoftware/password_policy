@@ -27,14 +27,16 @@ class IrHttp(models.AbstractModel):
                 # if password has expired, logout and prepare for reset password
                 if user._password_has_expired() and request.session.uid != 1:
                     user._revoke_all_devices()
-                    user.action_expire_password()
+                    # user.action_expire_password()
                     request.session.logout(keep_db=True)
                     request.env = api.Environment(request.env.cr, None, request.session.context)
+                    return request.redirect('/web/login')
 
                 # old authenticate process
                 elif not security.check_session(request.session, request.env):
                     request.session.logout(keep_db=True)
                     request.env = api.Environment(request.env.cr, None, request.session.context)
+                    return request.redirect('/web/login')
             getattr(cls, f'_auth_method_{auth}')()
         except (AccessDenied, http.SessionExpiredException, werkzeug.exceptions.HTTPException):
             raise
