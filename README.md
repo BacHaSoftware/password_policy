@@ -8,7 +8,7 @@
     <img src="/bhs_password_policy/static/description/icon.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">Password Policy</h3>
+  <h3 align="center">Password Policy Manager</h3>
 
   <p align="center">
     Strengthen your Odoo system with our Password Security module, ideal for all industries. Set up strong password policies quickly and easily to keep your data safe.
