@@ -1,5 +1,5 @@
 {
-    "name": "Password Policy",
+    "name": "Password Policy Manager",
     "summary": "Allow admin to set password security requirements.",
     "version": "1.0",
     "author": "Bac Ha Software",
